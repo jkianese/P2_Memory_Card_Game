@@ -13,8 +13,24 @@
 
 const deck = document.querySelector('.deck'); 
 const numMoves = document.querySelector('.moves');
-let moves = 0; 
+// const stars = document.querySelector('.stars');
+let moves = []; 
 let openCards = [];
+
+
+// variables from Walkthrough
+let = toggledCards = []; 
+let clockOff = true;
+let time = 0; 
+let clockId; 
+let matched = 0;
+
+
+let timer = {
+    seconds: 0,
+    minutes: 0,
+    clearTime: -1
+};
 
 
 /*
@@ -34,7 +50,7 @@ function startGame() {
     deck.innerHTML = (cardHTML.join('')); 
  }
 startGame();
-flipCards(); 
+flipCards();
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -67,17 +83,22 @@ function flipCards() {
     
     let allCards = document.querySelectorAll('.card');
         allCards.forEach(function(card) { 
-            card.addEventListener('click', function(event) { 
-                const clickTarget = event.target; 
+            card.addEventListener('click', function(event) {  
+                const clickCard = event.target;  
                 if (!card.classList.contains('open') && 
                 !card.classList.contains('show') && 
                 !card.classList.contains('match') &&
-                (isClickValid(clickTarget))) {
+                (twoCardsFlipped(clickCard))) {
                     openCards.push(this);
-                        card.classList.add('open', 'show'); 
-                            if (openCards.length === 2) {
-                                    checkForMatch(clickTarget);      
-                            }
+                        if (clockOff) {
+                            startClock(); 
+                            clockOff = false; 
+                        }
+                            card.classList.add('open', 'show'); 
+                                if (openCards.length === 2) {
+                                    checkForMatch(clickCard);
+                                    updateScore(); 
+                                }
                 }    
             });
         });
@@ -109,12 +130,50 @@ function checkForMatch() {
 moves += 1; 
 numMoves.innerText = moves;
 } 
-
-function isClickValid(clickTarget) {
+// Prevent 3rd card from being flipped
+function twoCardsFlipped(clickCard) {
     return (
-        clickTarget.classList.contains('card') &&
-        !clickTarget.classList.contains('match') &&
+        clickCard.classList.contains('card') &&
+        !clickCard.classList.contains('match') &&
         openCards.length < 2 &&
-        !openCards.includes(clickTarget)
+        !openCards.includes(clickCard)
     );      
+}
+
+// Score, Stars, Timer, Modal 
+function updateScore () {
+    if (moves === 12 || moves === 20) {
+        // console.log("you have made " + moves + " moves. You lose one star!")
+        removeStar(); 
+    }
+}
+
+function removeStar() {
+    Stars = document.querySelectorAll('.stars li'); 
+    for (star of Stars) {
+        if (star.style.display !== 'none') {
+            star.style.display = 'none';
+            break;
+        }
+    }
+}
+// clock
+
+function startClock() {
+    clockId = setInterval(() => {
+        time++;
+        displayTime();
+    }, 1000);
+}
+
+function displayTime() {
+    const clock = document.querySelector('.clock');
+    const minutes = Math.floor(time / 60); 
+    const seconds = time % 60;
+    
+    if (seconds < 10) {
+        clock.innerHTML = `${minutes}:0${seconds}`;
+    } else {
+        clock.innerHTML = `${minutes}:${seconds}`;
+    }
 }
