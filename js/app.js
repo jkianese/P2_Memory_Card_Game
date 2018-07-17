@@ -25,14 +25,6 @@ let time = 0;
 let clockId; 
 let matched = 0;
 
-
-let timer = {
-    seconds: 0,
-    minutes: 0,
-    clearTime: -1
-};
-
-
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -158,7 +150,7 @@ function removeStar() {
     }
 }
 // clock
-
+  
 function startClock() {
     clockId = setInterval(() => {
         time++;
