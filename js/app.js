@@ -13,14 +13,10 @@
 
 const deck = document.querySelector('.deck'); 
 const numMoves = document.querySelector('.moves'); 
-// const stars = document.querySelector('.stars'); 
-let moves = []; 
+
+let moves = 0; 
 let openCards = [];
 let stars = 3; 
-
-
-// variables from Walkthrough
-let = toggledCards = []; 
 let clockOff = true;
 let time = 0; 
 let clockId; 
@@ -96,6 +92,7 @@ function flipCards() {
                                 if (openCards.length === 2) {
                                     checkForMatch(clickCard);
                                     updateScore(); 
+                                    console.log(moves);
                                 }
                 }    
             });
@@ -113,14 +110,7 @@ function checkForMatch() {
         openCards[1].classList.add('open');
         openCards[1].classList.add('show');
         matched++;
-        console.log(matched); 
-        openCards = [];
-        if (matched === 8) {
-            // stopClock(); 
-            // endGame();
-            clearInterval(clockId); 
-        }       
-            
+        openCards = [];            
     } else {
         // no match
         setTimeout(function() {
@@ -133,7 +123,13 @@ function checkForMatch() {
         }     
 moves += 1; 
 numMoves.innerText = moves;
+        
+        if (matched === 8) {
+            clearInterval(clockId); 
+            endGame(); 
+        }
 } 
+
 // Prevent 3rd card from being flipped
 function twoCardsFlipped(clickCard) {
     return (
@@ -146,8 +142,7 @@ function twoCardsFlipped(clickCard) {
 
 // Score, Stars, Timer, Modal 
 function updateScore () {
-    if (moves === 3 || moves === 5) {
-        // console.log("you have made " + moves + " moves. You lose one star!")
+    if (moves === 2 || moves === 4) {
         removeStar(); 
     }
 }
@@ -185,33 +180,17 @@ function displayTime() {
     }
 }
 
-/*function stopClock() {
-    clearInterval(clockId);
-}
-
-function endGame() {
-    alert("Congratulations Morgan, you rule!");
-    //console.log("Congratulations Morgan! You have found all matches!")
-}
-*/
-
 function modal() {
+    modalStats(); 
+
     const modal = document.querySelector('.modal_background');
     modal.classList.toggle('modal_hide');
 }
-modal(); 
-// modal(); 
-/*
-//modal tests
-time = 121;
-displayTime(); 
-moves = 22; //2 Stars
-updateScore();
-*/
-writeModalStats(); 
+modal();  
+modalStats(); 
 modal(); 
 
-function writeModalStats() {
+function modalStats() {
     const timeStat = document.querySelector('.modal_time');
     const clockTime = document.querySelector('.clock').innerHTML;
     const movesStat = document.querySelector('.modal_moves'); 
@@ -228,15 +207,6 @@ document.querySelector('.modal_cancel').addEventListener('click', function(event
 
 document.querySelector('.modal_replay').addEventListener('click', restartGame);  
 
-
-/*
-function restartGame() {
-    clearInterval(clockId); 
-    // displayTime();
-    time = 0; 
-    moves = 0; 
-}
-*/
 
 function restartGame() {
     resetCards(); 
@@ -258,7 +228,7 @@ function resetMoves() {
 }
 
 function resetStars() {
-    stars = 0; 
+    stars = 3; 
     const starList = document.querySelectorAll('.stars li');
     for (star of starList) {
         star.style.display = 'inline';
@@ -270,4 +240,9 @@ function resetCards() {
     openCards = []; 
     matched = 0; 
     startGame();   
+}
+
+function endGame() {
+    // modalStats(); 
+    modal(); 
 }
