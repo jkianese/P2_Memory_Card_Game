@@ -12,10 +12,11 @@
  };       
 
 const deck = document.querySelector('.deck'); 
-const numMoves = document.querySelector('.moves');
-// const stars = document.querySelector('.stars');
+const numMoves = document.querySelector('.moves'); 
+// const stars = document.querySelector('.stars'); 
 let moves = []; 
 let openCards = [];
+let stars = 3; 
 
 
 // variables from Walkthrough
@@ -40,7 +41,8 @@ function startGame() {
     moves = 0;
     numMoves.innerText = moves; 
     deck.innerHTML = (cardHTML.join('')); 
- }
+    flipCards(); 
+}
 startGame();
 flipCards();
 
@@ -70,6 +72,10 @@ function shuffle(array) {
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
+
+document.querySelector('.card').addEventListener('click', flipCards);
+
+document.querySelector('.restart').addEventListener('click', restartGame);
 
 function flipCards() { 
     
@@ -106,8 +112,14 @@ function checkForMatch() {
         openCards[1].classList.add('match');
         openCards[1].classList.add('open');
         openCards[1].classList.add('show');
-
-        openCards = [];       
+        matched++;
+        console.log(matched); 
+        openCards = [];
+        if (matched === 8) {
+            // stopClock(); 
+            // endGame();
+            clearInterval(clockId); 
+        }       
             
     } else {
         // no match
@@ -134,7 +146,7 @@ function twoCardsFlipped(clickCard) {
 
 // Score, Stars, Timer, Modal 
 function updateScore () {
-    if (moves === 12 || moves === 20) {
+    if (moves === 3 || moves === 5) {
         // console.log("you have made " + moves + " moves. You lose one star!")
         removeStar(); 
     }
@@ -145,6 +157,9 @@ function removeStar() {
     for (star of Stars) {
         if (star.style.display !== 'none') {
             star.style.display = 'none';
+            // decrement stars
+            stars--;
+            console.log(stars);  
             break;
         }
     }
@@ -152,7 +167,7 @@ function removeStar() {
 // clock
   
 function startClock() {
-    clockId = setInterval(() => {
+    clockId = setInterval(function (event) {
         time++;
         displayTime();
     }, 1000);
@@ -168,4 +183,91 @@ function displayTime() {
     } else {
         clock.innerHTML = `${minutes}:${seconds}`;
     }
+}
+
+/*function stopClock() {
+    clearInterval(clockId);
+}
+
+function endGame() {
+    alert("Congratulations Morgan, you rule!");
+    //console.log("Congratulations Morgan! You have found all matches!")
+}
+*/
+
+function modal() {
+    const modal = document.querySelector('.modal_background');
+    modal.classList.toggle('modal_hide');
+}
+modal(); 
+// modal(); 
+/*
+//modal tests
+time = 121;
+displayTime(); 
+moves = 22; //2 Stars
+updateScore();
+*/
+writeModalStats(); 
+modal(); 
+
+function writeModalStats() {
+    const timeStat = document.querySelector('.modal_time');
+    const clockTime = document.querySelector('.clock').innerHTML;
+    const movesStat = document.querySelector('.modal_moves'); 
+    const starsStat = document.querySelector('.modal_stars'); 
+
+    timeStat.innerHTML = `Time = ${clockTime}`;
+    movesStat.innerHTML = `Moves = ${moves}`;
+    starsStat.innerHTML = `Stars = ${stars}`; 
+}
+
+document.querySelector('.modal_cancel').addEventListener('click', function(event) {
+    modal(); 
+});
+
+document.querySelector('.modal_replay').addEventListener('click', restartGame);  
+
+
+/*
+function restartGame() {
+    clearInterval(clockId); 
+    // displayTime();
+    time = 0; 
+    moves = 0; 
+}
+*/
+
+function restartGame() {
+    resetCards(); 
+    resetClockAndTime(); 
+    resetMoves();
+    resetStars();  
+}
+
+function resetClockAndTime() {
+    clearInterval(clockId); 
+    clockOff = true; 
+    time = 0;
+    displayTime(); 
+}
+
+function resetMoves() {
+    moves = 0; 
+    document.querySelector('.moves').innerHTML = moves; 
+}
+
+function resetStars() {
+    stars = 0; 
+    const starList = document.querySelectorAll('.stars li');
+    for (star of starList) {
+        star.style.display = 'inline';
+    }
+}
+
+function resetCards() {
+    openCards.push(); 
+    openCards = []; 
+    matched = 0; 
+    startGame();   
 }
