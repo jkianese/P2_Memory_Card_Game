@@ -11,15 +11,15 @@
      return `<li class="card" data-card="${card}"><i class="fa ${card}"></i></li>`;
  };       
 
+ // Global Variables
 const deck = document.querySelector('.deck'); 
 const numMoves = document.querySelector('.moves'); 
-
-let moves = 0; 
-let openCards = [];
-let stars = 3; 
 let clockOff = true;
-let time = 0; 
-let clockId; 
+let openCards = [];
+let clockId;
+let moves = 0; 
+let stars = 3; 
+let time = 0;  
 let matched = 0;
 
 /*
@@ -29,6 +29,7 @@ let matched = 0;
  *   - add each card's HTML to the page
  */
 
+ // Start Game and Shuffle Cards
 function startGame() { 
         
     let cardHTML = shuffle(cards).map(function(card) {
@@ -57,7 +58,6 @@ function shuffle(array) {
     return array;
 }
 
-
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
@@ -69,6 +69,7 @@ function shuffle(array) {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
+ 
 document.querySelector('.card').addEventListener('click', flipCards);
 
 document.querySelector('.restart').addEventListener('click', restartGame);
@@ -92,7 +93,6 @@ function flipCards() {
                                 if (openCards.length === 2) {
                                     checkForMatch(clickCard);
                                     updateScore(); 
-                                    console.log(moves);
                                 }
                 }    
             });
@@ -140,7 +140,7 @@ function twoCardsFlipped(clickCard) {
     );      
 }
 
-// Score, Stars, Timer, Modal 
+// Score
 function updateScore () {
     if (moves === 12 || moves === 20) {
         removeStar(); 
@@ -153,13 +153,13 @@ function removeStar() {
         if (star.style.display !== 'none') {
             star.style.display = 'none';
             // decrement stars
-            stars--;
-            console.log(stars);  
+            stars--;  
             break;
         }
     }
 }
   
+// Timer
 function startClock() {
     clockId = setInterval(function (event) {
         time++;
@@ -179,15 +179,15 @@ function displayTime() {
     }
 }
 
-function modal() {
+// Modal
+function openModal() {
     modalStats(); 
 
     const modal = document.querySelector('.modal_background');
     modal.classList.toggle('modal_hide');
 }
-modal();  
-//modalStats(); 
-modal(); 
+openModal();  
+openModal(); 
 
 function modalStats() {
     const timeStat = document.querySelector('.modal_time');
@@ -200,21 +200,21 @@ function modalStats() {
     starsStat.innerHTML = `Stars = ${stars}`; 
 }
 
+//Modal Buttons 
 document.querySelector('.modal_cancel').addEventListener('click', function(event) {
-    modal(); 
+    openModal(); 
 });
 
-document.querySelector('.modal_replay').addEventListener('click', restartGame);  
+document.querySelector('.modal_replay').addEventListener('click', replayGame);  
 
 function restartGame() {
     resetCards(); 
-    resetClockAndTime(); 
+    resetTimer(); 
     resetMoves();
-    resetStars();
-    modal();   
+    resetStars(); 
 }
 
-function resetClockAndTime() {
+function resetTimer() {
     clearInterval(clockId); 
     clockOff = true; 
     time = 0;
@@ -241,7 +241,29 @@ function resetCards() {
     startGame();   
 }
 
-function endGame() {
-    // modalStats(); 
-    modal(); 
+function replayGame() {
+    resetCards(); 
+    resetTimer(); 
+    resetMoves();
+    resetStars();
+    openModal(); 
 }
+
+function endGame() { 
+    openModal(); 
+}
+
+/* I spent weeks working on this code, but owe attributions
+to the following people and sources 
+(without whom I may not have completed this project):
+    Attributions: 
+
+    Mike Wales FEND P3: Memory Card Game
+        https://www.youtube.com/watch?v=_rUH-sEs68Y&index=14&list=WL&t=0s
+    Matthew Crawford - Walkthrough series
+        https://matthewcranford.com/
+    Yahya Elharony
+        https://www.youtube.com/watch?v=G8J13lmApkQ&t=0s&index=16&list=WL
+    Memory Game Webinar with Ryan Waite
+        https://www.youtube.com/watch?v=oECVwum-7Zc
+*/        
