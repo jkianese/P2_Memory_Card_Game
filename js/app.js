@@ -142,7 +142,7 @@ function twoCardsFlipped(clickCard) {
 
 // Score, Stars, Timer, Modal 
 function updateScore () {
-    if (moves === 2 || moves === 4) {
+    if (moves === 12 || moves === 20) {
         removeStar(); 
     }
 }
@@ -159,7 +159,6 @@ function removeStar() {
         }
     }
 }
-// clock
   
 function startClock() {
     clockId = setInterval(function (event) {
@@ -187,7 +186,7 @@ function modal() {
     modal.classList.toggle('modal_hide');
 }
 modal();  
-modalStats(); 
+//modalStats(); 
 modal(); 
 
 function modalStats() {
@@ -207,12 +206,12 @@ document.querySelector('.modal_cancel').addEventListener('click', function(event
 
 document.querySelector('.modal_replay').addEventListener('click', restartGame);  
 
-
 function restartGame() {
     resetCards(); 
     resetClockAndTime(); 
     resetMoves();
-    resetStars();  
+    resetStars();
+    modal();   
 }
 
 function resetClockAndTime() {
